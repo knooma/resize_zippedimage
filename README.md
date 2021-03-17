@@ -15,6 +15,7 @@ files: Supports zip/rar/7z/cbz archive files. if no arguments given "*.{zip,rar,
 - Resize large images (height > 2400px).
 - Convert png images into jpg.
 - Shrink jpg image file size if possible (re-encode image with --quality 90).
+- Writes new archive files with zip format.
 - Original archive files are stored in `org` directory.
 
 ## Target environment
