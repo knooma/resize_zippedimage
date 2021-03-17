@@ -12,7 +12,7 @@ files: Supports zip/rar/7z/cbz archive files. if no arguments given "*.{zip,rar,
 ## How it works
 
 - Target file: zip/rar/7z/cbz archive files which include jpg/jpeg/png image.
-- Resizes large images (height > 2400px).
+- Resizes large images (height > 2048px).
 - Converts png images into jpg.
 - Shrinks jpg image file size if possible (re-encode image with --quality 90).
 - Writes new archive files with zip format.
