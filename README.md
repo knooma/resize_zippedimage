@@ -4,8 +4,10 @@ Bash script to resize & convert archived images into jpg. Also converts archive 
 
 ## Usage
 
+```
 resize_zippedimage.sh <files>
 files: Supports zip/rar/7z/cbz archive files. if no arguments given "*.{zip,rar,7z,cab}" is used as default.
+```
 
 ## How it works
 
