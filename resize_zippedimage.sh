@@ -17,7 +17,7 @@ RESIZE_HEIGHT=2048
 
 # error <message>
 error() {
-    rm -rf $TMPDIR
+#    rm -rf $TMPDIR
     [ "$1" != "" ] && echo $1
     exit 1
 }
@@ -29,7 +29,7 @@ extract() {
         # Use 'unrar' for rar file becuase 'unar' sometimes fails to extract rar file.
         ABSPATH="$(cd ${DIRNAME} && pwd)/${BASENAME}"
         mkdir "$EXTRACTDIR" || error
-        pushd "$EXTRACTDIR" > /dev/null || error
+	pushd "$EXTRACTDIR" > /dev/null || error
         unrar -r x "$ABSPATH" > /dev/null || error 'fail to unrar'
         popd > /dev/null || error
     else
@@ -50,12 +50,12 @@ archive() {
 
 # rezieArchive <archive>
 resizeArchive() {
+    echo "$1"
+
     if [ ! -f "$1" ]; then
         echo "WARNING: No such file. Skipped."
-        return
+	return
     fi
-
-    echo "$1"
 
     DIRNAME=`dirname "$1"`
     BASENAME=`basename "$1"`
@@ -63,7 +63,7 @@ resizeArchive() {
     # Must be zip/rar/cbz
     FILE=${BASENAME%.*}
     EXT=${BASENAME##*.}
-    if [ "$EXT" != "zip" ] && [ "$EXT" != "rar" ] && [ "$EXT" != "cbz" ] && [ "$EXT" != "7z" ]; then
+    if [ "$EXT" != "zip" ] && [ "$EXT" != "rar" ] && [ "$EXT" != "cbz" ] && [ "$EXT" != "7z" ] && [ "$EXT" != "lzh" ] ; then
         echo "Skipped. Unsupported extension."
         return
     fi
@@ -81,6 +81,11 @@ resizeArchive() {
         return
     fi
     mkdir -p "$ORGDIR" || error
+
+    if [ "$EXT" != "zip" ] && [ -e "${1%.*}.zip" ]; then
+        echo "WARNING: Skipped. ${1%.*}.zip already exists."
+        return
+    fi
 
     # Check if the archive has any jpg/png files
     if ! lsar "$1" | egrep '\.(jpg|JPG|jpeg|JPEG|png|PNG)$' > /dev/null; then
@@ -121,8 +126,8 @@ resizeArchive() {
         rm "$NEWFILE" || error
         rm -rf "$EXTRACTDIR" || error
         return
-    elif [ $SIZE -lt $NEWSIZE ]; then
-        echo "Just convert to zip. Size is not shrinked: $SIZEMESSAGE"
+    elif [ $(($SIZE*90/100)) -lt $NEWSIZE ]; then
+        echo "Just converted to zip. Size is not shrinked enough: $SIZEMESSAGE"
 
         rm "$NEWFILE" || error
         rm -r "$EXTRACTDIR" || error
@@ -182,9 +187,9 @@ echo "temp dir: ${TMPDIR}"
 
 if [ $# = 0 ]; then
     shopt -s nullglob
-    main *.{zip,rar,cbz,7z}
+    main *.{zip,rar,cbz,7z,lzh}
 else
-    main $* 
+    main "$@"
 fi
 
 rm -rf $TMPDIR
